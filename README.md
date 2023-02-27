@@ -28,11 +28,7 @@ cp example.env .env
 and add the bot's token and allowed users
 
 To develop use
+
 ```console
 npm run dev
-```
-
-### Running
-```console
-npm start
 ```
