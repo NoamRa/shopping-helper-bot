@@ -12,7 +12,7 @@ import { withAuth } from "./withAuth.js";
 
   const bot = new Telegraf(BOT_TOKEN);
 
-  bot.start((ctx) => ctx.reply("Hello 👋🏼. Type /help for list of commands"));
+  bot.start((ctx) => ctx.reply("Hi, I'm Shopping Helper bot. 👋🏼\nType /help for list of commands."));
 
   bot.help((ctx) =>
     ctx.reply(
