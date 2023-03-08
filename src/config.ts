@@ -1,13 +1,13 @@
-import * as dotenv from "dotenv";
+import { load } from "https://deno.land/std@0.178.0/dotenv/mod.ts";
 
-export const BOT_TOKEN = dotenv.config().parsed.BOT_TOKEN.trim();
+const env = await load();
+
+export const BOT_TOKEN = env.BOT_TOKEN.trim();
 if (!BOT_TOKEN) {
   throw new Error("Missing BOT_TOKEN in .env file");
 }
 
-export const ALLOWED = dotenv
-  .config()
-  .parsed.ALLOWED.split(",")
+export const ALLOWED = env.ALLOWED.split(",")
   .map((user) => parseInt(user.trim()))
   .filter(Boolean);
 if (!ALLOWED) {

@@ -1,7 +1,9 @@
-import { ALLOWED } from "./config.js";
+import type { Context } from "npm:telegraf";
 
-export function withAuth(fn) {
-  return async function (...args) {
+import { ALLOWED } from "./config.ts";
+
+export function withAuth(fn: Function) {
+  return async function (...args: any[]) {
     const ctx = args[0];
     if (!assertContext(ctx)) {
       throw new Error("withAuth must be called with context");
@@ -18,7 +20,7 @@ export function withAuth(fn) {
   };
 }
 
-function assertContext(ctx) {
+function assertContext(ctx: Context) {
   return (
     ctx.constructor.name === "Context" &&
     ctx.update &&

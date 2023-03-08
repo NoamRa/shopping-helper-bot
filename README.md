@@ -6,7 +6,7 @@ https://t.me/ShoopingHelperBot
 ### Run
 
 ```console
-npm start
+deno task start
 ```
 
 ### Develop
@@ -16,7 +16,6 @@ npm start
 ```console
 git clone https://github.com/NoamRa/shopping-helper-bot.git
 cd shopping-helper-bot
-npm install
 ```
 
 Fill `.env` file
@@ -30,5 +29,5 @@ and add the bot's token and allowed users
 To develop use
 
 ```console
-npm run dev
+deno task dev
 ```
