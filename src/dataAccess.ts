@@ -19,14 +19,14 @@ export async function Dao(dbPath: string) {
   }
 
   async function readDB() {
-    return JSON.parse(await Deno.readTextFile(dbPath, { encoding: "utf-8" }));
+    return JSON.parse(await Deno.readTextFile(dbPath));
   }
 
   async function writeDB(data: DB | string) {
     if (typeof data === "object") {
       data = JSON.stringify(data, null, 2);
     }
-    await Deno.writeTextFile(dbPath, data, { encoding: "utf-8" });
+    await Deno.writeTextFile(dbPath, data);
   }
 
   function createEntry({ item, quantity = 1 }: Entry) {
