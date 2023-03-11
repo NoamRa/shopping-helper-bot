@@ -1,7 +1,6 @@
 # Shopping Helper Bot
 
-Telegram bot that manages shopping list
-https://t.me/ShoopingHelperBot
+Telegram bot that manages shopping list https://t.me/ShoopingHelperBot
 
 ### Run
 
@@ -12,6 +11,8 @@ deno task start
 ### Develop
 
 #### First time setup
+
+Assuming [Deno is installed](https://deno.land/manual@v1.31.1/getting_started/installation), run
 
 ```console
 git clone https://github.com/NoamRa/shopping-helper-bot.git
