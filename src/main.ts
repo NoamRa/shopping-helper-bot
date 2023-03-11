@@ -1,29 +1,25 @@
-import path from "node:path";
+import { join, resolve } from "https://deno.land/std@0.179.0/path/mod.ts";
 
-import { Telegraf } from "npm:telegraf";
-import { message } from "npm:telegraf/filters";
+import { Telegraf, Context } from "https://dev.jspm.io/telegraf";
+import { message } from "https://dev.jspm.io/telegraf/filters";
+type TContext = typeof Context;
 
 import { BOT_TOKEN } from "./config.ts";
 import { Dao } from "./dataAccess.ts";
 import { withAuth } from "./withAuth.ts";
 
 (async function main() {
-  const dao = await Dao(path.join(path.resolve(), "db.json"));
+  const dao = await Dao(join(resolve(), "db.json"));
 
-  let bot;
-  try {
-    bot = new Telegraf(BOT_TOKEN);
-  } catch (error) {
-    console.error(error);
-  }
+  const bot = new Telegraf(BOT_TOKEN);
 
-  bot.start((ctx) =>
+  bot.start((ctx: TContext) =>
     ctx.reply(
       "Hi, I'm Shopping Helper bot. 👋🏼\nType /help for list of commands.",
     ),
   );
 
-  bot.help((ctx) =>
+  bot.help((ctx: TContext) =>
     ctx.reply(
       [
         "/list all items to buy",
@@ -34,7 +30,7 @@ import { withAuth } from "./withAuth.ts";
 
   bot.command(
     "list",
-    withAuth(async (ctx) => {
+    withAuth(async (ctx: TContext) => {
       const list = await dao.list();
       ctx.reply(list);
     }),
@@ -42,18 +38,20 @@ import { withAuth } from "./withAuth.ts";
 
   bot.command(
     "add",
-    withAuth(async (ctx) => {
+    withAuth(async (ctx: TContext) => {
       const [_command, ...text] = ctx.message.text.split(" ");
-      if (text.length === 0)
-        return ctx.reply("/add entry. eg: `/add tofu` or `/add 3 carrots`");
+      if (text.length === 0) {
+        ctx.reply("/add entry. eg: `/add tofu` or `/add 3 carrots`");
+        return;
+      }
 
       let [quantity, ...rest] = text;
 
       let item;
       try {
         quantity = JSON.parse(quantity);
-      } catch (err) {
-        console.error(err);
+      } catch (_err: unknown) {
+        // console.error(_err); // possible if text is `/add foo`
       }
 
       if (typeof quantity === "number") {
@@ -62,10 +60,13 @@ import { withAuth } from "./withAuth.ts";
         quantity = 1;
         item = text.join(" ");
       }
-      if (item === "") return ctx.reply(`${quantity} of what?`);
+      if (item === "") {
+        ctx.reply(`${quantity} of what?`);
+        return;
+      }
 
       await dao.addEntry(item, quantity);
-      return ctx.reply(`adding ${quantity} of ${item}`);
+      ctx.reply(`adding ${quantity} of ${item}`);
     }),
   );
 
@@ -73,7 +74,7 @@ import { withAuth } from "./withAuth.ts";
   //   ctx.reply(`you are ${JSON.stringify(ctx.message.from, null, 2)}`),
   // );
 
-  bot.on(message("text"), async (ctx) => {
+  bot.on(message("text"), async (ctx: TContext) => {
     await ctx.reply(
       `Hello ${ctx.message.from.username}. I'm not sure what does '${ctx.message.text}' means...`,
     );
