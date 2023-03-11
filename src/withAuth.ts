@@ -1,29 +1,32 @@
-import type { Context } from "npm:telegraf";
+import { Context } from "https://dev.jspm.io/telegraf";
+type TContext = typeof Context;
 
 import { ALLOWED } from "./config.ts";
 
-export function withAuth(fn: Function) {
-  return async function (...args: any[]) {
-    const ctx = args[0];
-    if (!assertContext(ctx)) {
+export function withAuth(fn: (...args: unknown[]) => void) {
+  return function (...args: unknown[]) {
+    const [ctx] = args;
+    if (!isContext(ctx)) {
       throw new Error("withAuth must be called with context");
     }
 
     const user = ctx.update.message.from;
     if (!ALLOWED.includes(user.id)) {
-      return ctx.reply(
+      console.log({ reply: typeof ctx.reply, ALLOWED });
+      ctx.reply(
         `I'm sorry, ${user.first_name}, I'm afraid I can't do that. 🛑`,
       );
+      return;
     }
 
-    await fn(...args);
+    return fn(...args);
   };
 }
 
-function assertContext(ctx: Context) {
+function isContext(ctx: TContext): ctx is TContext {
   return (
-    ctx.constructor.name === "Context" &&
+    ctx.constructor.name.includes("Context") &&
     ctx.update &&
-    ctx.telegram.constructor.name === "Telegram"
+    ctx.telegram.constructor.name.includes("Telegram")
   );
 }
