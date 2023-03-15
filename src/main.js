@@ -12,7 +12,11 @@ import { withAuth } from "./withAuth.js";
 
   const bot = new Telegraf(BOT_TOKEN);
 
-  bot.start((ctx) => ctx.reply("Hi, I'm Shopping Helper bot. 👋🏼\nType /help for list of commands."));
+  bot.start((ctx) =>
+    ctx.reply(
+      "Hi, I'm Shopping Helper bot. 👋🏼\nType /help for list of commands.",
+    ),
+  );
 
   bot.help((ctx) =>
     ctx.reply(
@@ -31,31 +35,42 @@ import { withAuth } from "./withAuth.js";
     }),
   );
 
-  bot.command("add", withAuth(async (ctx) => {
-    const [_command, ...text] = ctx.message.text.split(" ");
-    if (text.length === 0)
-      return ctx.reply("/add entry. eg: `/add tofu` or `/add 3 carrots`");
+  bot.command(
+    "add",
+    withAuth(async (ctx) => {
+      const [_command, ...text] = ctx.message.text.split(" ");
+      if (text.length === 0)
+        return ctx.reply("/add entry. eg: `/add tofu` or `/add 3 carrots`");
 
-    let [quantity, ...rest] = text;
+      let [quantity, ...rest] = text;
 
-    let item;
-    try {
-      quantity = JSON.parse(quantity);
-    } catch (err) {
-      console.error(err);
-    }
+      let item;
+      try {
+        quantity = JSON.parse(quantity);
+      } catch (err) {
+        console.error(err);
+      }
 
-    if (typeof quantity === "number") {
-      item = rest.join(" ");
-    } else {
-      quantity = 1;
-      item = text.join(" ");
-    }
-    if (item === "") return ctx.reply(`${quantity} of what?`);
+      if (typeof quantity === "number") {
+        item = rest.join(" ");
+      } else {
+        quantity = 1;
+        item = text.join(" ");
+      }
+      if (item === "") return ctx.reply(`${quantity} of what?`);
 
-    await dao.addEntry(item, quantity);
-    return ctx.reply(`adding ${quantity} of ${item}`);
-  }));
+      await dao.addEntry(item, quantity);
+      return ctx.reply(`adding ${quantity} of ${item}`);
+    }),
+  );
+
+  bot.command(
+    "clear",
+    withAuth(async (ctx) => {
+      await dao.clear();
+      return ctx.reply(`Cleared list`);
+    }),
+  );
 
   // bot.command("me", (ctx) =>
   //   ctx.reply(`you are ${JSON.stringify(ctx.message.from, null, 2)}`),
