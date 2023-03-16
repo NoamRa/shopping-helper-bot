@@ -23,6 +23,7 @@ import { withAuth } from "./withAuth.js";
       [
         "/list all items to buy",
         "/add entry. eg: `/add tofu` or `/add 3 carrots`",
+        "/clear to remove all items from list"
       ].join("\n"),
     ),
   );
