@@ -32,3 +32,13 @@ To develop use
 ```console
 npm run dev
 ```
+
+#### Steps to run attended
+
+* Add start:unattended command to `/etc/rc.local` or any startup script:
+  ```sh
+  cd /home/pi/code/shopping-helper-bot
+  npm run start:unattended &
+  cd -
+  ```
+* If git throws with "detected dubious ownership in repository", run `sudo git config --global --add safe.directory /path/to/shopping-helper-bot
